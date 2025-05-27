@@ -1,6 +1,6 @@
 # pyhold
 
-![PyPI](https://pypi.org/project/pyhold/)
+PyPi: [Click Here](https://pypi.org/project/pyhold/)
 
 **pyhold** is a lightweight, persistent, dictionary-like data store built in pure Python. Designed for MVPs, CLI tools, and embedded apps that need quick and reliable state saving — no database required.
 
