@@ -2,3 +2,5 @@ __pycache__
 .pytest_cache
 pyhold.xml
 pytestCases.py
+dist
+pyhold.egg-info

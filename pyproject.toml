@@ -5,13 +5,11 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "pyhold"
 version = "0.1.0"
-description = "A lightweight persistent key-value store with GUI support"
+description = "A lightweight, persistent, dictionary-style key-value store with GUI support"
 readme = "README.md"
 requires-python = ">=3.7"
-license = {text = "MIT"}
-authors = [
-  {name = "Anjan Bellamkonda"}
-]
+license = "MIT"
+authors = [{ name = "Anjan Bellamkonda" }]
 dependencies = []
 
 [project.urls]
