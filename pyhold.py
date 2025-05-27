@@ -6,6 +6,7 @@ from tkinter import ttk, messagebox, simpledialog
 import ast
 
 
+
 class pyhold:
     def __init__(self, filename="pyhold.xml", mode="keyvalue", auto_sync=True, auto_reload=True):
         self.filename = filename
@@ -158,6 +159,41 @@ class pyhold:
                 value = value_str
 
             self.volatileMem.append(self.__keyvalNode(key, value))
+    
+    def get(self, key, default=None):
+        if self.mode == "keyvalue":
+            for item in self.volatileMem:
+                if item.key == key:
+                    return item.value
+            return default
+        else:
+            raise NotImplementedError("Only keyvalue mode is implemented.")
+    
+    def keys(self):
+        if self.mode == "keyvalue":
+            return [item.key for item in self.volatileMem]
+        else:
+            raise NotImplementedError("Only keyvalue mode is implemented.")
+    
+    def values(self):
+        if self.mode == "keyvalue":
+            return [item.value for item in self.volatileMem]
+        else:
+            raise NotImplementedError("Only keyvalue mode is implemented.")
+    
+    def items(self):
+        if self.mode == "keyvalue":
+            return [(item.key, item.value) for item in self.volatileMem]
+        else:
+            raise NotImplementedError("Only keyvalue mode is implemented.")
+    
+    def clear(self):
+        if self.mode == "keyvalue":
+            self.volatileMem.clear()
+            if self.auto_sync:
+                self.save_pyhold()
+        else:
+            raise NotImplementedError("Only keyvalue mode is implemented.")
 
     def showGUI(self):
         if self.mode != "keyvalue":
