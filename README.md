@@ -1,5 +1,8 @@
 # pyhold
 
+![PyPI](https://img.shields.io/pypi/v/pyhold)
+![Downloads](https://img.shields.io/pypi/dm/pyhold)
+
 **pyhold** is a lightweight, persistent, dictionary-like data store built in pure Python. Designed for MVPs, CLI tools, and embedded apps that need quick and reliable state saving — no database required.
 
 ### ✅ Features
