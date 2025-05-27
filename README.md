@@ -1,6 +1,6 @@
-# datalink
+# pyhold
 
-**Datalink** is a lightweight, persistent, dictionary-like data store built in pure Python. Designed for MVPs, CLI tools, and embedded apps that need quick and reliable state saving — no database required.
+**pyhold** is a lightweight, persistent, dictionary-like data store built in pure Python. Designed for MVPs, CLI tools, and embedded apps that need quick and reliable state saving — no database required.
 
 ### ✅ Features
 - Dictionary-style access: `store["token"] = "abc"`
@@ -12,9 +12,9 @@
 ### 🚀 Quick Start
 
 ```python
-from datalink import Datalink
+from pyhold import pyhold
 
-store = Datalink("mydata.xml", auto_sync=True)
+store = pyhold("mydata.xml", auto_sync=True)
 store["username"] = "anjan"
 print(store["username"])
 store.pop("username")

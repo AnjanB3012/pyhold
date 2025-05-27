@@ -5,19 +5,19 @@ import xml.etree.ElementTree as ET
 from unittest.mock import patch, mock_open
 import json
 
-# Assuming the Datalink class is in a file called datalink.py
+# Assuming the pyhold class is in a file called pyhold.py
 # If it's in a different file, adjust the import accordingly
-from Datalink import Datalink
+from pyhold import pyhold
 
 
-class TestDatalinkInitialization:
-    """Test Datalink initialization and configuration"""
+class TestpyholdInitialization:
+    """Test pyhold initialization and configuration"""
     
     def test_default_initialization(self):
         """Test default initialization parameters"""
         with tempfile.TemporaryDirectory() as temp_dir:
             filename = os.path.join(temp_dir, "test.xml")
-            dl = Datalink(filename=filename)
+            dl = pyhold(filename=filename)
             
             assert dl.filename == filename
             assert dl.mode == "keyvalue"
@@ -29,7 +29,7 @@ class TestDatalinkInitialization:
         """Test initialization with custom parameters"""
         with tempfile.TemporaryDirectory() as temp_dir:
             filename = os.path.join(temp_dir, "custom.xml")
-            dl = Datalink(filename=filename, mode="keyvalue", auto_sync=False, auto_reload=False)
+            dl = pyhold(filename=filename, mode="keyvalue", auto_sync=False, auto_reload=False)
             
             assert dl.filename == filename
             assert dl.mode == "keyvalue"
@@ -42,7 +42,7 @@ class TestDatalinkInitialization:
             filename = os.path.join(temp_dir, "existing.xml")
             
             # Create a sample XML file
-            root = ET.Element("datalink")
+            root = ET.Element("pyhold")
             keyval = ET.SubElement(root, "keyval")
             key_elem = ET.SubElement(keyval, "key")
             key_elem.text = "test_key"
@@ -53,7 +53,7 @@ class TestDatalinkInitialization:
             tree = ET.ElementTree(root)
             tree.write(filename, encoding='utf-8', xml_declaration=True)
             
-            dl = Datalink(filename=filename)
+            dl = pyhold(filename=filename)
             assert len(dl.volatileMem) == 1
             assert dl["test_key"] == "test_value"
     
@@ -61,19 +61,19 @@ class TestDatalinkInitialization:
         """Test initialization with auto_reload=False"""
         with tempfile.TemporaryDirectory() as temp_dir:
             filename = os.path.join(temp_dir, "no_reload.xml")
-            dl = Datalink(filename=filename, auto_reload=False)
+            dl = pyhold(filename=filename, auto_reload=False)
             
             assert len(dl.volatileMem) == 0
 
 
-class TestDatalinkKeyValueOperations:
+class TestpyholdKeyValueOperations:
     """Test key-value operations"""
     
     def setup_method(self):
         """Setup for each test method"""
         self.temp_dir = tempfile.mkdtemp()
         self.filename = os.path.join(self.temp_dir, "test.xml")
-        self.dl = Datalink(filename=self.filename, auto_sync=False)
+        self.dl = pyhold(filename=self.filename, auto_sync=False)
     
     def teardown_method(self):
         """Cleanup after each test method"""
@@ -171,14 +171,14 @@ class TestDatalinkKeyValueOperations:
             self.dl.pop("nonexistent")
 
 
-class TestDatalinkDataTypes:
+class TestpyholdDataTypes:
     """Test handling of different data types"""
     
     def setup_method(self):
         """Setup for each test method"""
         self.temp_dir = tempfile.mkdtemp()
         self.filename = os.path.join(self.temp_dir, "test.xml")
-        self.dl = Datalink(filename=self.filename, auto_sync=False)
+        self.dl = pyhold(filename=self.filename, auto_sync=False)
     
     def teardown_method(self):
         """Cleanup after each test method"""
@@ -234,7 +234,7 @@ class TestDatalinkDataTypes:
         assert self.dl.volatileMem[0].dtype == "tuple"
 
 
-class TestDatalinkFileOperations:
+class TestpyholdFileOperations:
     """Test file save and load operations"""
     
     def setup_method(self):
@@ -247,14 +247,14 @@ class TestDatalinkFileOperations:
         import shutil
         shutil.rmtree(self.temp_dir, ignore_errors=True)
     
-    def test_save_datalink(self):
+    def test_save_pyhold(self):
         """Test saving data to XML file"""
-        dl = Datalink(filename=self.filename, auto_sync=False)
+        dl = pyhold(filename=self.filename, auto_sync=False)
         dl.write("key1", "value1")
         dl.write("key2", 42)
         dl.write("key3", True)
         
-        dl.save_datalink()
+        dl.save_pyhold()
         
         # Verify file exists and has correct structure
         assert os.path.exists(self.filename)
@@ -262,22 +262,22 @@ class TestDatalinkFileOperations:
         tree = ET.parse(self.filename)
         root = tree.getroot()
         
-        assert root.tag == "datalink"
+        assert root.tag == "pyhold"
         keyvals = root.findall("keyval")
         assert len(keyvals) == 3
     
-    def test_load_datalink(self):
+    def test_load_pyhold(self):
         """Test loading data from XML file"""
         # First create and save some data
-        dl1 = Datalink(filename=self.filename, auto_sync=False)
+        dl1 = pyhold(filename=self.filename, auto_sync=False)
         dl1.write("key1", "value1")
         dl1.write("key2", 42)
         dl1.write("key3", [1, 2, 3])
-        dl1.save_datalink()
+        dl1.save_pyhold()
         
         # Create new instance and load data
-        dl2 = Datalink(filename=self.filename, auto_reload=False)
-        dl2.load_datalink()
+        dl2 = pyhold(filename=self.filename, auto_reload=False)
+        dl2.load_pyhold()
         
         assert len(dl2) == 3
         assert dl2["key1"] == "value1"
@@ -287,15 +287,15 @@ class TestDatalinkFileOperations:
     def test_load_nonexistent_file(self):
         """Test loading from non-existent file"""
         nonexistent_file = os.path.join(self.temp_dir, "nonexistent.xml")
-        dl = Datalink(filename=nonexistent_file, auto_reload=False)
+        dl = pyhold(filename=nonexistent_file, auto_reload=False)
         
         # Should not raise an error
-        dl.load_datalink()
+        dl.load_pyhold()
         assert len(dl) == 0
     
     def test_auto_sync_enabled(self):
         """Test automatic syncing when enabled"""
-        dl = Datalink(filename=self.filename, auto_sync=True)
+        dl = pyhold(filename=self.filename, auto_sync=True)
         
         # Write operation should automatically save
         dl.write("auto_key", "auto_value")
@@ -304,12 +304,12 @@ class TestDatalinkFileOperations:
         assert os.path.exists(self.filename)
         
         # Load with new instance to verify data was saved
-        dl2 = Datalink(filename=self.filename)
+        dl2 = pyhold(filename=self.filename)
         assert dl2["auto_key"] == "auto_value"
     
     def test_auto_sync_disabled(self):
         """Test no automatic syncing when disabled"""
-        dl = Datalink(filename=self.filename, auto_sync=False)
+        dl = pyhold(filename=self.filename, auto_sync=False)
         
         # Write operation should not automatically save
         dl.write("no_auto_key", "no_auto_value")
@@ -319,7 +319,7 @@ class TestDatalinkFileOperations:
     
     def test_complex_data_persistence(self):
         """Test persistence of complex data types"""
-        dl1 = Datalink(filename=self.filename, auto_sync=False)
+        dl1 = pyhold(filename=self.filename, auto_sync=False)
         
         test_data = {
             "string": "test_string",
@@ -335,16 +335,16 @@ class TestDatalinkFileOperations:
         for key, value in test_data.items():
             dl1.write(key, value)
         
-        dl1.save_datalink()
+        dl1.save_pyhold()
         
         # Load with new instance
-        dl2 = Datalink(filename=self.filename)
+        dl2 = pyhold(filename=self.filename)
         
         for key, expected_value in test_data.items():
             assert dl2[key] == expected_value
 
 
-class TestDatalinkEdgeCases:
+class TestpyholdEdgeCases:
     """Test edge cases and error conditions"""
     
     def setup_method(self):
@@ -359,40 +359,40 @@ class TestDatalinkEdgeCases:
     
     def test_empty_key(self):
         """Test handling of empty key"""
-        dl = Datalink(filename=self.filename, auto_sync=False)
+        dl = pyhold(filename=self.filename, auto_sync=False)
         dl.write("", "empty_key_value")
         assert dl[""] == "empty_key_value"
     
     def test_none_values(self):
         """Test handling of None values"""
-        dl = Datalink(filename=self.filename, auto_sync=False)
+        dl = pyhold(filename=self.filename, auto_sync=False)
         dl.write("none_key", None)
         assert dl["none_key"] is None
     
     def test_unicode_characters(self):
         """Test handling of Unicode characters"""
-        dl = Datalink(filename=self.filename, auto_sync=False)
+        dl = pyhold(filename=self.filename, auto_sync=False)
         unicode_value = "Hello 世界 🌍"
         dl.write("unicode_key", unicode_value)
         assert dl["unicode_key"] == unicode_value
     
     def test_large_data(self):
         """Test handling of large data"""
-        dl = Datalink(filename=self.filename, auto_sync=False)
+        dl = pyhold(filename=self.filename, auto_sync=False)
         large_list = list(range(1000))
         dl.write("large_key", large_list)
         assert dl["large_key"] == large_list
     
     def test_special_characters_in_keys(self):
         """Test keys with special characters"""
-        dl = Datalink(filename=self.filename, auto_sync=False)
+        dl = pyhold(filename=self.filename, auto_sync=False)
         special_key = "key with spaces & symbols!@#$%"
         dl.write(special_key, "special_value")
         assert dl[special_key] == "special_value"
     
     def test_overwrite_different_types(self):
         """Test overwriting value with different data type"""
-        dl = Datalink(filename=self.filename, auto_sync=False)
+        dl = pyhold(filename=self.filename, auto_sync=False)
         
         dl.write("type_key", "string")
         assert dl["type_key"] == "string"
@@ -403,7 +403,7 @@ class TestDatalinkEdgeCases:
         assert dl.volatileMem[0].dtype == "int"
 
 
-class TestDatalinkNotImplemented:
+class TestpyholdNotImplemented:
     """Test methods that should raise NotImplementedError for non-keyvalue modes"""
     
     def test_not_implemented_methods(self):
@@ -413,13 +413,13 @@ class TestDatalinkNotImplemented:
         pass
 
 
-class TestDatalinkKeyvalNode:
+class TestpyholdKeyvalNode:
     """Test the internal __keyvalNode class"""
     
     def test_keyval_node_creation(self):
         """Test creation of keyval nodes"""
-        dl = Datalink(filename="test.xml", auto_sync=False)
-        node = dl._Datalink__keyvalNode("test_key", "test_value")
+        dl = pyhold(filename="test.xml", auto_sync=False)
+        node = dl._pyhold__keyvalNode("test_key", "test_value")
         
         assert node.key == "test_key"
         assert node.value == "test_value"
@@ -427,23 +427,23 @@ class TestDatalinkKeyvalNode:
     
     def test_keyval_node_different_types(self):
         """Test keyval nodes with different data types"""
-        dl = Datalink(filename="test.xml", auto_sync=False)
+        dl = pyhold(filename="test.xml", auto_sync=False)
         
-        int_node = dl._Datalink__keyvalNode("int_key", 42)
+        int_node = dl._pyhold__keyvalNode("int_key", 42)
         assert int_node.dtype == "int"
         
-        float_node = dl._Datalink__keyvalNode("float_key", 3.14)
+        float_node = dl._pyhold__keyvalNode("float_key", 3.14)
         assert float_node.dtype == "float"
         
-        bool_node = dl._Datalink__keyvalNode("bool_key", True)
+        bool_node = dl._pyhold__keyvalNode("bool_key", True)
         assert bool_node.dtype == "bool"
         
-        list_node = dl._Datalink__keyvalNode("list_key", [1, 2, 3])
+        list_node = dl._pyhold__keyvalNode("list_key", [1, 2, 3])
         assert list_node.dtype == "list"
 
 
 # Integration tests
-class TestDatalinkIntegration:
+class TestpyholdIntegration:
     """Integration tests for complete workflows"""
     
     def setup_method(self):
@@ -459,13 +459,13 @@ class TestDatalinkIntegration:
     def test_full_workflow(self):
         """Test complete workflow: create, modify, save, load, modify again"""
         # Phase 1: Create and populate
-        dl1 = Datalink(filename=self.filename, auto_sync=True)
+        dl1 = pyhold(filename=self.filename, auto_sync=True)
         dl1["name"] = "John"
         dl1["age"] = 25
         dl1["hobbies"] = ["reading", "coding"]
         
         # Phase 2: Load in new instance and verify
-        dl2 = Datalink(filename=self.filename)
+        dl2 = pyhold(filename=self.filename)
         assert dl2["name"] == "John"
         assert dl2["age"] == 25
         assert dl2["hobbies"] == ["reading", "coding"]
@@ -476,25 +476,25 @@ class TestDatalinkIntegration:
         del dl2["hobbies"]
         
         # Phase 4: Load again and verify changes
-        dl3 = Datalink(filename=self.filename)
+        dl3 = pyhold(filename=self.filename)
         assert dl3["name"] == "John"
         assert dl3["age"] == 26
         assert dl3["city"] == "New York"
         assert "hobbies" not in dl3
     
     def test_concurrent_access_simulation(self):
-        """Simulate concurrent access by multiple Datalink instances"""
+        """Simulate concurrent access by multiple pyhold instances"""
         # Instance 1 writes data
-        dl1 = Datalink(filename=self.filename, auto_sync=True)
+        dl1 = pyhold(filename=self.filename, auto_sync=True)
         dl1["shared_key"] = "initial_value"
         
         # Instance 2 reads and modifies
-        dl2 = Datalink(filename=self.filename, auto_sync=True)
+        dl2 = pyhold(filename=self.filename, auto_sync=True)
         assert dl2["shared_key"] == "initial_value"
         dl2["shared_key"] = "modified_value"
         
         # Instance 3 reads the modification
-        dl3 = Datalink(filename=self.filename)
+        dl3 = pyhold(filename=self.filename)
         assert dl3["shared_key"] == "modified_value"
 
 

@@ -2,8 +2,8 @@ import xml.etree.ElementTree as ET
 import os
 import json
 
-class Datalink:
-    def __init__(self, filename="datalink.xml", mode="keyvalue", auto_sync=True, auto_reload=True):
+class pyhold:
+    def __init__(self, filename="pyhold.xml", mode="keyvalue", auto_sync=True, auto_reload=True):
         self.filename = filename
         self.mode = mode
         self.auto_sync = auto_sync
@@ -14,7 +14,7 @@ class Datalink:
                     self.volatileMem = []
             else:
                 self.volatileMem = []
-                self.load_datalink()
+                self.load_pyhold()
         else:
             self.volatileMem = []
 
@@ -27,12 +27,12 @@ class Datalink:
                     item.value = value
                     item.dtype = self.__keyvalNode(key, value).dtype
                     if self.auto_sync:
-                        self.save_datalink()
+                        self.save_pyhold()
                     return
             tempNode = self.__keyvalNode(key, value)
             self.volatileMem.append(tempNode)
             if self.auto_sync:
-                self.save_datalink()
+                self.save_pyhold()
 
     def __getitem__(self, key):
         if self.mode == "keyvalue":
@@ -67,7 +67,7 @@ class Datalink:
                 if item.key == key:
                     item.value = value
                     if self.auto_sync:
-                        self.save_datalink()
+                        self.save_pyhold()
                     return
             self.write(key, value)
         else:
@@ -79,7 +79,7 @@ class Datalink:
                 if item.key == key:
                     del self.volatileMem[i]
                     if self.auto_sync:
-                        self.save_datalink()
+                        self.save_pyhold()
                     return
             raise KeyError(f"Key '{key}' not found.")
         else:
@@ -92,15 +92,15 @@ class Datalink:
                     value = item.value
                     del self.volatileMem[i]
                     if self.auto_sync:
-                        self.save_datalink()
+                        self.save_pyhold()
                     return value
             raise KeyError(f"Key '{key}' not found.")
         else:
             raise NotImplementedError("Only keyvalue mode is implemented.")
 
-    def save_datalink(self):
+    def save_pyhold(self):
         if self.mode == "keyvalue":
-            root = ET.Element("datalink")
+            root = ET.Element("pyhold")
             for item in self.volatileMem:
                 key_val = ET.SubElement(root, "keyval")
 
@@ -122,7 +122,7 @@ class Datalink:
         else:
             raise NotImplementedError("Only keyvalue mode is implemented.")
 
-    def load_datalink(self):
+    def load_pyhold(self):
         if not os.path.exists(self.filename):
             return
 
