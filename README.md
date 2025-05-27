@@ -9,6 +9,10 @@
 - Fully human-readable and editable
 - Zero dependencies
 
+### Installation
+'''bash
+pip install pyhold
+
 ### 🚀 Quick Start
 
 ```python
