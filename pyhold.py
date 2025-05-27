@@ -1,6 +1,7 @@
 import xml.etree.ElementTree as ET
 import os
 import json
+import tkinter as tk
 
 class pyhold:
     def __init__(self, filename="pyhold.xml", mode="keyvalue", auto_sync=True, auto_reload=True):
@@ -154,6 +155,30 @@ class pyhold:
                 value = value_str
 
             self.volatileMem.append(self.__keyvalNode(key, value))
+
+    def showGUI(self):
+        if self.mode != "keyvalue":
+            raise NotImplementedError("Only keyvalue mode is implemented for GUI.")
+
+        root = tk.Tk()
+        root.title("pyhold Key-Value Store")
+
+        frame = tk.Frame(root)
+        frame.pack(padx=10, pady=10)
+
+        listbox = tk.Listbox(frame, width=50, height=20)
+        listbox.pack(side=tk.LEFT, fill=tk.BOTH)
+
+        scrollbar = tk.Scrollbar(frame)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+        listbox.config(yscrollcommand=scrollbar.set)
+        scrollbar.config(command=listbox.yview)
+
+        for item in self.volatileMem:
+            listbox.insert(tk.END, f"{item.key}: {item.value} ({item.dtype})")
+
+        root.mainloop()
 
     class __keyvalNode:
         def __init__(self, key, value):
