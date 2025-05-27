@@ -10,8 +10,10 @@
 - Zero dependencies
 
 ### Installation
-'''bash
+```bash
 pip install pyhold
+```
+
 
 ### 🚀 Quick Start
 
