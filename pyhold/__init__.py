@@ -1,2 +1,4 @@
 from .pyhold import pyhold
-__version__ = '0.1.1'
+from .pyholdkeyvalue import pyholdkeyvalue
+from .pyholdlinkedlist import pyholdlinkedlist, llNode, LoadError
+__version__ = '0.2.0'
