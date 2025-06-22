@@ -10,13 +10,9 @@ class pyholdkeyvalue:
         self.filename = filename
         self.auto_sync = auto_sync
         self.auto_reload = auto_reload
+        self.volatileMem = []
         if self.auto_reload:
-            if not os.path.exists(self.filename):
-                self.volatileMem = []
-            else:
-                self.volatileMem = []
-        else:
-            self.volatileMem = []
+            self.load_pyhold()
 
     def write(self, key=None, value=None):
         if key is None:

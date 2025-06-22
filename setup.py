@@ -1,8 +1,8 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='pyhold',
-    version='0.2.0',
+    name='pyhold',  
+    version='0.2.1',
     packages=find_packages(include=['pyhold', 'pyhold.*']),
     install_requires=[],
     author='Anjan Bellamkonda',
